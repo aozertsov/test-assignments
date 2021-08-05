@@ -72,5 +72,25 @@ public class ParserTest extends LightPlatformTestCase {
         assertEquals("That is a simple node", value);
     }
 
+    @Test
+    public void testAttribute() {
+        final XmlFile file = createXmlFile("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
+                "<root>\n" +
+                "    <node id=\"node1\">That is a simple node</node>\n" +
+                "</root>\n");
+        final DomManagerImpl manager = getDomManager();
+
+
+        Root root = manager.getFileElement(file, Root.class).getRootElement();
+
+
+        assertEquals(root.getNodes().size(), 1);
+
+        var value = root.getNodes().get(0).getValue();
+        var id = root.getNodes().get(0).getId().getValue();
+        assertEquals("That is a simple node", value);
+        assertEquals("node1", id);
+    }
+
 
 }
