@@ -13,6 +13,7 @@
     <depends>com.intellij.modules.platform</depends>
 
     <extensions defaultExtensionNs="com.intellij">
+        <dom.fileMetaData implementation="io.aozertsov.xml.dom.XmlFileDescription" rootTagName="root"/>
         <!-- Add your extensions here -->
     </extensions>
 
