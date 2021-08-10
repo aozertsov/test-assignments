@@ -92,5 +92,37 @@ public class ParserTest extends LightPlatformTestCase {
         assertEquals("node1", id);
     }
 
+    @Test
+    public void testListNode() {
+        final XmlFile file = createXmlFile("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
+                "<root>\n" +
+                "    <node id=\"node1\">That is a simple node</node>\n" +
+                "    <node id=\"node2\">That is another simple node</node>\n" +
+                "    <node id=\"node3\" title=\"Not so simple node\">\n" +
+                "        <node id=\"node5\">So a child node</node>\n" +
+                "        <node id=\"node1\" title=\"Some child with other children\">\n" +
+                "            <node id=\"node1\">Just a child node</node>\n" +
+                "            <node id=\"node2\">Some other child node</node>\n" +
+                "        </node>\n" +
+                "\n" +
+                "    </node>\n" +
+                "</root>\n");
+        final DomManagerImpl manager = getDomManager();
+
+
+        Root root = manager.getFileElement(file, Root.class).getRootElement();
+
+
+        assertEquals(3, root.getNodes().size());
+
+        var value = root.getNodes().get(2);
+        assertTrue(value instanceof ListNode);
+
+        var children = ((ListNode)value).getNodes();
+        assertEquals("Not so simple node", ((ListNode)value).getTittle().getValue());
+        assertEquals(2, children.size());
+        assertEquals(2, ((ListNode)children.get(1)).getNodes().size());
+    }
+
 
 }
