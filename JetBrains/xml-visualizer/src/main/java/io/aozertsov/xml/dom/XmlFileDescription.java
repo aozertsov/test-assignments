@@ -6,4 +6,9 @@ public class XmlFileDescription extends DomFileDescription<Root> {
     public XmlFileDescription() {
         super(Root.class, "root");
     }
+
+    @Override
+    protected void initializeFileDescription() {
+        registerTypeChooser(Node.class, new NodeChooser());
+    }
 }
