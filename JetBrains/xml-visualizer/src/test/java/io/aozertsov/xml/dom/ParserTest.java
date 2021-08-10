@@ -54,8 +54,9 @@ public class ParserTest extends JavaPsiTestCase {
 
         assertEquals(root.getNodes().size(), 1);
 
-        var value = root.getNodes().get(0).getValue();
-        assertEquals("That is a simple node", value);
+        var node = root.getNodes().get(0);
+        assertEquals("That is a simple node", node.getValue());
+        assertEquals(0, node.getChildren().size());
     }
 
     @Test
@@ -72,10 +73,9 @@ public class ParserTest extends JavaPsiTestCase {
 
         assertEquals(root.getNodes().size(), 1);
 
-        var value = root.getNodes().get(0).getValue();
-        var id = root.getNodes().get(0).getId().getValue();
-        assertEquals("That is a simple node", value);
-        assertEquals("node1", id);
+        var node = root.getNodes().get(0);
+        assertEquals("That is a simple node", node.getValue());
+        assertEquals("node1", node.getId().getValue());
     }
 
     @Test
@@ -101,13 +101,15 @@ public class ParserTest extends JavaPsiTestCase {
 
         assertEquals(3, root.getNodes().size());
 
-        var value = root.getNodes().get(2);
-        assertTrue(value instanceof ListNode);
+        var listValue = root.getNodes().get(2);
+        assertTrue(listValue instanceof ListNode);
 
-        var children = ((ListNode)value).getNodes();
-        assertEquals("Not so simple node", ((ListNode)value).getTittle().getValue());
+        assertEquals(2, listValue.getChildren().size());
+
+        var children = listValue.getChildren();
+        assertEquals("Not so simple node", ((ListNode)listValue).getTittle().getValue());
         assertEquals(2, children.size());
-        assertEquals(2, ((ListNode)children.get(1)).getNodes().size());
+        assertEquals(2, children.get(1).getChildren().size());
     }
 
     @Test
@@ -146,10 +148,10 @@ public class ParserTest extends JavaPsiTestCase {
         final DomManagerImpl manager = getDomManager();
         Root root = manager.getFileElement(file, Root.class).getRootElement();
 
-        var importNode = (ImportNode)root.getNodes().get(4);
+        var importNode = root.getNodes().get(4);
         var source = importNode.getValue();
 
-        assertEquals(3, importNode.getSource().getValue().size());
+        assertEquals(3, importNode.getChildren().size());
         assertEquals("other-sample-file.xml", source);
     }
 

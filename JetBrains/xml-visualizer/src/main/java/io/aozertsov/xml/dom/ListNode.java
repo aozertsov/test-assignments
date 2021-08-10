@@ -10,4 +10,9 @@ public interface ListNode extends Node {
 
     @Attribute("title")
     GenericAttributeValue<String> getTittle();
+
+    @Override
+    default List<Node> getChildren() {
+        return this.getNodes();
+    }
 }

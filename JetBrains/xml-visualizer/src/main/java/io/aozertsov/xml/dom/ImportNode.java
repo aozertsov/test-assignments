@@ -16,8 +16,12 @@ public interface ImportNode extends Node {
     @Convert(value = SourceConverter.class, soft = true)
     GenericAttributeValue<List<Node>> getSource();
 
-    @Override
     default String getValue() {
         return getSource().getXmlTag().getAttribute("src").getValue();
+    }
+
+    @Override
+    default List<Node> getChildren() {
+        return this.getSource().getValue();
     }
 }
