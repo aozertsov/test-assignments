@@ -14,7 +14,7 @@ public class NodeChooser extends TypeChooser {
         if (tag.getAttribute("src") != null) {
             return ImportNode.class;
         }
-        if (tag.getChildren().length > 0) {
+        if (tag.getAttribute("title") != null) {
             return ListNode.class;
         }
         return Node.class;

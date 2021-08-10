@@ -107,7 +107,7 @@ public class ParserTest extends JavaPsiTestCase {
         assertEquals(2, listValue.getChildren().size());
 
         var children = listValue.getChildren();
-        assertEquals("Not so simple node", ((ListNode)listValue).getTittle().getValue());
+        assertEquals("Not so simple node", listValue.getValue());
         assertEquals(2, children.size());
         assertEquals(2, children.get(1).getChildren().size());
     }

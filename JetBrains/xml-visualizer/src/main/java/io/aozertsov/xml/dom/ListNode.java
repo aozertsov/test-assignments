@@ -15,4 +15,9 @@ public interface ListNode extends Node {
     default List<Node> getChildren() {
         return this.getNodes();
     }
+
+    @Override
+    default String getValue() {
+        return this.getTittle().getValue();
+    }
 }
