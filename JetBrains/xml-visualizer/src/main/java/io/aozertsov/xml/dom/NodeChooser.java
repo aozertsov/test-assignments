@@ -11,8 +11,12 @@ import java.lang.reflect.Type;
 public class NodeChooser extends TypeChooser {
     @Override
     public Type chooseType(XmlTag tag) {
-        if (tag.getChildren().length > 0)
+        if (tag.getAttribute("src") != null) {
+            return ImportNode.class;
+        }
+        if (tag.getChildren().length > 0) {
             return ListNode.class;
+        }
         return Node.class;
     }
 
