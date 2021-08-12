@@ -1,8 +1,5 @@
 package io.aozertsov.xml.editor;
 
-import io.aozertsov.xml.dom.ImportNode;
-import io.aozertsov.xml.dom.Node;
-
 import javax.swing.*;
 import javax.swing.tree.DefaultMutableTreeNode;
 import java.awt.*;
@@ -17,12 +14,9 @@ public class XmlRenderer implements javax.swing.tree.TreeCellRenderer {
 
     @Override
     public Component getTreeCellRendererComponent(JTree tree, Object value, boolean selected, boolean expanded, boolean leaf, int row, boolean hasFocus) {
-        Node o = (Node)((DefaultMutableTreeNode) value).getUserObject();
+        String o = (String) ((DefaultMutableTreeNode) value).getUserObject();
 
-        String text = "" + o.getValue();
-        if (o instanceof ImportNode) {
-            text = "imported from: " + o.getValue();
-        }
+        String text = "" + o;
 
         label.setText(text);
         return label;
