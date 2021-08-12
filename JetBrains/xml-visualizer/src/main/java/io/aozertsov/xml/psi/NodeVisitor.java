@@ -28,15 +28,11 @@ public class NodeVisitor extends XmlElementVisitor {
             if (tag.getAttributeValue("src") != null) {
                 var manager = PathReferenceManager.getInstance();
                 var reference = (XmlFileImpl) manager.getPathReference(tag.getAttributeValue("src"), tag.getAttribute("src")).resolve();
-                entityNode = new DefaultMutableTreeNode("imported from: " + tag.getAttributeValue("src"));
+                entityNode = new DefaultMutableTreeNode(tag);
                 acceptChildren(reference.getRootTag(), entityNode);
             }
-            else if (tag.getAttributeValue("title") != null) {
-                entityNode = new DefaultMutableTreeNode(tag.getAttributeValue("title"));
-                acceptChildren(tag, entityNode);
-            }
             else {
-                entityNode = new DefaultMutableTreeNode(tag.getValue().getText());
+                entityNode = new DefaultMutableTreeNode(tag);
                 acceptChildren(tag, entityNode);
             }
             root.add(entityNode);
