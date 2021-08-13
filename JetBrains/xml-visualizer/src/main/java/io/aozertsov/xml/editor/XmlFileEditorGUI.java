@@ -12,6 +12,7 @@ import org.jetbrains.annotations.Nullable;
 import javax.swing.*;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
+import javax.swing.tree.TreeSelectionModel;
 import java.util.List;
 
 public class XmlFileEditorGUI extends BasicDomElementComponent<Root> implements AsyncFileListener {
@@ -37,6 +38,12 @@ public class XmlFileEditorGUI extends BasicDomElementComponent<Root> implements 
         rootTree.setModel(new DefaultTreeModel(top));
         rootTree.setRootVisible(false);
         rootTree.setCellRenderer(new XmlRenderer());
+        rootTree.getSelectionModel().setSelectionMode(
+                TreeSelectionModel.CONTIGUOUS_TREE_SELECTION);
+
+        rootTree.setDragEnabled(true);
+        rootTree.setTransferHandler(new TreeTransferHandler(xmlFile));
+        rootTree.setDropMode(DropMode.ON_OR_INSERT);
     }
 
     @Override
