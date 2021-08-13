@@ -1,7 +1,6 @@
 package io.aozertsov.xml.psi;
 
 import com.intellij.openapi.paths.PathReferenceManager;
-import com.intellij.psi.PsiElement;
 import com.intellij.psi.XmlElementVisitor;
 import com.intellij.psi.impl.source.xml.XmlFileImpl;
 import com.intellij.psi.util.PsiTreeUtil;
@@ -29,24 +28,16 @@ public class NodeVisitor extends XmlElementVisitor {
                 var manager = PathReferenceManager.getInstance();
                 var reference = (XmlFileImpl) manager.getPathReference(tag.getAttributeValue("src"), tag.getAttribute("src")).resolve();
                 entityNode = new DefaultMutableTreeNode(tag);
-                acceptChildren(reference.getRootTag(), entityNode);
+                reference.getRootTag().acceptChildren(new NodeVisitor(entityNode));
             }
             else {
                 entityNode = new DefaultMutableTreeNode(tag);
-                acceptChildren(tag, entityNode);
+                tag.acceptChildren(new NodeVisitor(entityNode));
             }
             root.add(entityNode);
         }
         else {
-            for (PsiElement element : tag.getChildren()) {
-                element.accept(this);
-            }
-        }
-    }
-
-    private void acceptChildren(XmlTag tag, DefaultMutableTreeNode parent) {
-        for (PsiElement element : tag.getChildren()) {
-            element.accept(new NodeVisitor(parent));
+            tag.acceptChildren(this);
         }
     }
 
