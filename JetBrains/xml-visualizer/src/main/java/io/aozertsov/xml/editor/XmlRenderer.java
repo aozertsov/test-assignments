@@ -1,7 +1,6 @@
 package io.aozertsov.xml.editor;
 
-import io.aozertsov.xml.dom.ImportNode;
-import io.aozertsov.xml.dom.Node;
+import com.intellij.psi.xml.XmlTag;
 
 import javax.swing.*;
 import javax.swing.tree.DefaultMutableTreeNode;
@@ -17,13 +16,18 @@ public class XmlRenderer implements javax.swing.tree.TreeCellRenderer {
 
     @Override
     public Component getTreeCellRendererComponent(JTree tree, Object value, boolean selected, boolean expanded, boolean leaf, int row, boolean hasFocus) {
-        Node o = (Node)((DefaultMutableTreeNode) value).getUserObject();
+        XmlTag tag = (XmlTag) ((DefaultMutableTreeNode) value).getUserObject();
+        String text;
 
-        String text = "" + o.getValue();
-        if (o instanceof ImportNode) {
-            text = "imported from: " + o.getValue();
+        if (tag.getAttributeValue("src") != null) {
+            text = "imported from: " + tag.getAttributeValue("src");
         }
-
+        else if (tag.getAttributeValue("title") != null) {
+            text = tag.getAttributeValue("title");
+        }
+        else {
+            text = tag.getValue().getText();
+        }
         label.setText(text);
         return label;
     }

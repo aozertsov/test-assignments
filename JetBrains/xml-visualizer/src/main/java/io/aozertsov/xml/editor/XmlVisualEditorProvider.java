@@ -2,8 +2,10 @@ package io.aozertsov.xml.editor;
 
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vfs.VirtualFile;
+import com.intellij.openapi.vfs.VirtualFileManager;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.PsiManager;
+import com.intellij.psi.impl.source.xml.XmlFileImpl;
 import com.intellij.psi.xml.XmlFile;
 import com.intellij.util.xml.DomManager;
 import com.intellij.util.xml.ui.DomFileEditor;
@@ -22,7 +24,9 @@ public class XmlVisualEditorProvider extends PerspectiveFileEditorProvider {
         PsiFile psiFile = PsiManager.getInstance(project).findFile(file);
         Root rootElement = domManager.getFileElement((XmlFile) psiFile, Root.class).getRootElement();
 
-        return new DomFileEditor<>(project, file, "GUI", new XmlFileEditorGUI(rootElement));
+        var editor = new XmlFileEditorGUI((XmlFileImpl)psiFile, rootElement);
+        VirtualFileManager.getInstance().addAsyncFileListener(editor, editor);
+        return new DomFileEditor<>(project, file, "GUI", editor);
     }
 
 
