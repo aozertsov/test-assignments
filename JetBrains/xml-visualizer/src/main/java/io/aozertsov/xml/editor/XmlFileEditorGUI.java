@@ -1,25 +1,20 @@
 package io.aozertsov.xml.editor;
 
+import com.intellij.openapi.vfs.AsyncFileListener;
+import com.intellij.openapi.vfs.newvfs.events.VFileEvent;
 import com.intellij.psi.impl.source.xml.XmlFileImpl;
 import com.intellij.util.xml.ui.BasicDomElementComponent;
-import io.aozertsov.xml.dom.Node;
 import io.aozertsov.xml.dom.Root;
 import io.aozertsov.xml.psi.NodeVisitor;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import javax.swing.*;
-import javax.swing.event.TreeSelectionEvent;
-import javax.swing.event.TreeSelectionListener;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
-import javax.swing.tree.TreePath;
-import javax.swing.tree.TreeSelectionModel;
-import java.awt.datatransfer.DataFlavor;
-import java.awt.datatransfer.Transferable;
-import java.awt.datatransfer.UnsupportedFlavorException;
-import java.util.ArrayList;
 import java.util.List;
 
-public class XmlFileEditorGUI extends BasicDomElementComponent<Root> implements TreeSelectionListener {
+public class XmlFileEditorGUI extends BasicDomElementComponent<Root> implements AsyncFileListener {
 
     private JPanel editorWindowContent;
     private JTree rootTree;
@@ -28,7 +23,8 @@ public class XmlFileEditorGUI extends BasicDomElementComponent<Root> implements 
     public XmlFileEditorGUI(XmlFileImpl xml, Root domElement) {
         super(domElement);
         this.xmlFile = xml;
-        initTree();
+        DefaultMutableTreeNode top = new DefaultMutableTreeNode(xmlFile.getRootTag());
+        initTree(top);
     }
 
     @Override
@@ -36,24 +32,23 @@ public class XmlFileEditorGUI extends BasicDomElementComponent<Root> implements 
         return editorWindowContent;
     }
 
-    @Override
-    public void valueChanged(TreeSelectionEvent e) {
-
-    }
-
-    private void initTree() {
-        DefaultMutableTreeNode top = new DefaultMutableTreeNode();
+    private void initTree(DefaultMutableTreeNode top) {
         xmlFile.accept(new NodeVisitor(top));
         rootTree.setModel(new DefaultTreeModel(top));
         rootTree.setRootVisible(false);
         rootTree.setCellRenderer(new XmlRenderer());
     }
 
-    private void createNodes(DefaultMutableTreeNode treeNode, List<Node> nodes) {
-        for (Node node : nodes) {
-            DefaultMutableTreeNode entityNode = new DefaultMutableTreeNode(node);
-            treeNode.add(entityNode);
-            createNodes(entityNode, node.getChildren());
-        }
+    @Override
+    public @Nullable ChangeApplier prepareChange(@NotNull List<? extends @NotNull VFileEvent> events) {
+        return new ChangeApplier() {
+            @Override
+            public void afterVfsChange() {
+                rootTree.setModel(null);
+                DefaultMutableTreeNode top = new DefaultMutableTreeNode(xmlFile.getRootTag());
+                initTree(top);
+                editorWindowContent.updateUI();
+            }
+        };
     }
 }
